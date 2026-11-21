@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": "Exports"
+		},
+		{
+			"path": "Photos"
+		},
+		{
+			"path": "Vaccinations"
+		},
+		{
+			"path": "Vet Records"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "Vet Records"
+	}
+}

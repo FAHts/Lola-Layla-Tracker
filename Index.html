@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>
+Lola & Layla Pet Tracker
+</title>
+
+<style>
+:root {
+    --background: #f4f7fb;
+    --card: #ffffff;
+    --text: #243447;
+    --muted: #627d98;
+    --primary: #4f46e5;
+    --border: #dfe7ef;
+}
+
+body.dark {
+    --background: #17202a;
+    --card: #22303d;
+    --text: #f4f6f7;
+    --muted: #b4c4ce;
+    --border: #405263;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--background);
+    color: var(--text);
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    margin: 16px 0;
+    padding: 20px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(36, 52, 71, 0.08);
+}
+
+.grid .card {
+    margin: 0;
+}
+
+input,
+textarea,
+button {
+    font: inherit;
+}
+
+input[type="number"],
+input[type="date"] {
+    min-height: 38px;
+    margin: 4px 8px 8px 0;
+    padding: 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--card);
+    color: var(--text);
+}
+
+textarea {
+    width: 100%;
+    margin: 8px 0;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--card);
+    color: var(--text);
+    resize: vertical;
+}
+
+button {
+    min-height: 38px;
+    margin: 4px 4px 4px 0;
+    padding: 8px 14px;
+    border: 0;
+    border-radius: 6px;
+    background: var(--primary);
+    color: #ffffff;
+    cursor: pointer;
+}
+
+button:hover {
+    filter: brightness(0.92);
+}
+
+.photo {
+    display: block;
+    max-width: 100%;
+    max-height: 300px;
+    margin-top: 12px;
+    border-radius: 8px;
+}
+
+canvas {
+    width: 100%;
+    max-width: 900px;
+    height: 300px;
+}
+
+@media print {
+    button,
+    input,
+    textarea {
+        display: none;
+    }
+
+    .card {
+        box-shadow: none;
+        break-inside: avoid;
+    }
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+
+<h1>
+🐾 Lola & Layla Pet Tracker
+</h1>
+
+<button onclick="toggleTheme()">
+🌙 Dark Mode
+</button>
+
+</div>
+
+<div class="card">
+
+<h2>📋 Dashboard</h2>
+
+<p>
+🐶 Lola Age:
+<span id="lolaAge">
+Loading...
+</span>
+</p>
+
+<p>
+🐱 Layla Age:
+<span id="laylaAge">
+Loading...
+</span>
+</p>
+
+<p>
+🐶 Current Weight:
+<span id="lolaCurrent">
+0 kg
+</span>
+</p>
+
+<p>
+🐱 Current Weight:
+<span id="laylaCurrent">
+0 kg
+</span>
+</p>
+
+<h3>
+Upcoming Reminders
+</h3>
+
+<ul id="reminders">
+
+</ul>
+
+</div>
+
+<div class="grid">
+
+
+<div class="card">
+
+<h2>
+🐶 Lola
+</h2>
+
+<p>
+Breed:
+Pocket American Bully
+</p>
+
+<p>
+DOB:
+17 September 2026
+</p>
+
+<input
+type="number"
+id="lolaWeight"
+step="0.1"
+placeholder="Weight">
+
+<button onclick="addWeight('lola')">
+Save Weight
+</button>
+
+<h3>
+Weight History
+</h3>
+
+<ul id="lolaWeightList">
+
+</ul>
+
+<hr>
+
+<h3>
+📸 Lola Photo
+</h3>
+
+<input
+type="file"
+accept="image/*"
+onchange="uploadPhoto(event,'lolaPhoto')">
+
+<br><br>
+
+<img
+id="lolaPhoto"
+class="photo">
+
+</div>
+
+<div class="card">
+
+<h2>
+🐱 Layla
+</h2>
+
+<p>
+Species:
+Cat
+</p>
+
+<p>
+Date of Birth:
+<span id="laylaDobDisplay">
+03 October 2026
+</span>
+</p>
+
+<input
+type="number"
+id="laylaWeight"
+step="0.1"
+placeholder="Weight">
+
+<button onclick="addWeight('layla')">
+Save Weight
+</button>
+
+<h3>
+Weight History
+</h3>
+
+<ul id="laylaWeightList">
+
+</ul>
+
+<hr>
+
+<h3>
+📸 Layla Photo
+</h3>
+
+<input
+type="file"
+accept="image/*"
+onchange="uploadPhoto(event,'laylaPhoto')">
+
+<br><br>
+
+<img
+id="laylaPhoto"
+class="photo">
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>
+📈 Growth Chart
+</h2>
+
+<canvas
+id="chart"
+width="900"
+height="300">
+</canvas>
+
+</div>
+
+<div class="card">
+
+<h2>
+💉 Reminder Dates
+</h2>
+
+<label>
+Next Vaccination
+</label>
+
+<input
+type="date"
+id="nextVaccine">
+
+<label>
+Next Deworming
+</label>
+
+<input
+type="date"
+id="nextDeworm">
+
+<button onclick="saveReminderDates()">
+Save Dates
+</button>
+
+</div>
+
+<div class="card">
+
+<h2>
+💉 Vaccinations
+</h2>
+
+<textarea
+id="vaccinations"
+rows="5">
+</textarea>
+
+<button onclick="saveField('vaccinations')">
+Save
+</button>
+
+</div>
+
+<div class="card">
+
+<h2>
+🪱 Deworming
+</h2>
+
+<textarea
+id="deworming"
+rows="5">
+</textarea>
+
+<button onclick="saveField('deworming')">
+Save
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h2>
+📝 Memories Journal
+</h2>
+
+<textarea
+id="journal"
+rows="8">
+</textarea>
+
+<button onclick="saveField('journal')">
+Save Journal
+</button>
+
+</div>
+
+<div class="card">
+
+<h2>
+📁 Data Management
+</h2>
+
+<button onclick="exportData()">
+Export Records
+</button>
+
+<button onclick="printRecords()">
+Print Records
+</button>
+
+</div>
+
+</div>
+new Date("2026-10-03");
+
+function calculateAge(dob)
+
+<script>
+
+
+const lolaDOB =
+new Date("2026-09-17");
+
+const laylaDOB =
+new Date("2026-10-03");
+
+const lolaWeights =
+loadWeightRecords("lolaWeights");
+
+const laylaWeights =
+loadWeightRecords("laylaWeights");
+
+function loadWeightRecords(key) {
+    try {
+        const records = JSON.parse(localStorage.getItem(key) || "[]");
+        return Array.isArray(records)
+            ? records.filter(record =>
+                record &&
+                typeof record.weight === "number" &&
+                Number.isFinite(record.weight) &&
+                typeof record.date === "string"
+            )
+            : [];
+    } catch (error) {
+        console.warn(`Could not load ${key}`, error);
+        return [];
+    }
+}
+
+function calculateAge(dob) {
+
+    const today = new Date();
+
+    const diffTime =
+        today - dob;
+
+    const totalDays =
+        Math.floor(
+            diffTime /
+            (1000 * 60 * 60 * 24)
+        );
+
+    const weeks =
+        Math.floor(totalDays / 7);
+
+    const months =
+        Math.floor(totalDays / 30.44);
+
+    const remainingDays =
+        totalDays % 7;
+
+    if(months < 3){
+
+        return `${weeks} weeks, ${remainingDays} days`;
+    }
+
+    return `${months} months, ${remainingDays} days`;
+}
+
+function updateAges(){
+
+    document.getElementById(
+        "lolaAge"
+    ).innerText =
+    calculateAge(lolaDOB);
+
+    document.getElementById(
+        "laylaAge"
+    ).innerText =
+    calculateAge(laylaDOB);
+}
+
+
+function addWeight(pet){
+
+    let input =
+    pet === "lola"
+    ? document.getElementById("lolaWeight")
+    : document.getElementById("laylaWeight");
+
+    let weight =
+    parseFloat(input.value);
+
+    if (!Number.isFinite(weight) || weight <= 0) {
+        input.setCustomValidity("Please enter a weight greater than zero.");
+        input.reportValidity();
+        return;
+    }
+
+    input.setCustomValidity("");
+
+    let record = {
+
+        date:
+        new Date()
+        .toLocaleDateString(),
+
+        weight:weight
+    };
+
+    if(pet === "lola"){
+
+        lolaWeights.push(record);
+
+        localStorage.setItem(
+            "lolaWeights",
+            JSON.stringify(
+                lolaWeights
+            )
+        );
+
+    }else{
+
+        laylaWeights.push(record);
+
+        localStorage.setItem(
+            "laylaWeights",
+            JSON.stringify(
+                laylaWeights
+            )
+        );
+    }
+
+    input.value = "";
+
+    renderWeights();
+
+    updateCurrentWeights();
+    drawChart();
+}
+
+function renderWeights(){
+
+    document.getElementById(
+        "lolaWeightList"
+    ).innerHTML =
+
+    lolaWeights.map(w =>
+        `<li>${w.date} - ${w.weight} kg</li>`
+    ).join("");
+
+    document.getElementById(
+        "laylaWeightList"
+    ).innerHTML =
+
+    laylaWeights.map(w =>
+        `<li>${w.date} - ${w.weight} kg</li>`
+    ).join("");
+}
+
+
+
+function updateCurrentWeights(){
+
+    if(lolaWeights.length > 0){
+
+        document.getElementById(
+            "lolaCurrent"
+        ).innerText =
+
+        lolaWeights[
+            lolaWeights.length - 1
+        ].weight + " kg";
+    }
+
+    if(laylaWeights.length > 0){
+
+        document.getElementById(
+            "laylaCurrent"
+        ).innerText =
+
+        laylaWeights[
+            laylaWeights.length - 1
+        ].weight + " kg";
+    }
+}
+
+
+function uploadPhoto(
+event,
+imageId
+){
+    const file = event.target.files && event.target.files[0];
+    if (!file) {
+        return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+        alert("Please select an image file.");
+        event.target.value = "";
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function() {
+        document.getElementById(imageId).src = reader.result;
+        localStorage.setItem(imageId, reader.result);
+    };
+    reader.onerror = function() {
+        alert("The photo could not be read.");
+    };
+    reader.readAsDataURL(file);
+}
+
+
+
+function updateReminders(){
+
+    let html = "";
+
+    let vaccine =
+    localStorage.getItem(
+        "nextVaccine"
+    );
+
+    let deworm =
+    localStorage.getItem(
+        "nextDeworm"
+    );
+
+    if(vaccine){
+
+        html +=
+        `<li>💉 Next Vaccine: ${vaccine}</li>`;
+    }
+
+    if(deworm){
+
+        html +=
+        `<li>🪱 Next Deworming: ${deworm}</li>`;
+    }
+
+    document.getElementById(
+        "reminders"
+    ).innerHTML = html;
+}
+
+
+
+
+function exportData(){
+
+    const data = {
+        lolaWeights,
+        laylaWeights,
+        vaccinations:
+        document.getElementById(
+            "vaccinations"
+        ).value,
+        deworming:
+        document.getElementById(
+            "deworming"
+        ).value,
+        journal:
+        document.getElementById(
+            "journal"
+        ).value,
+        nextVaccine: localStorage.getItem("nextVaccine"),
+        nextDeworm: localStorage.getItem("nextDeworm")
+    };
+
+    const blob =
+    new Blob(
+        [
+            JSON.stringify(
+                data,
+                null,
+                2
+            )
+        ],
+        {
+            type:
+            "application/json"
+        }
+    );
+
+    const a =
+    document.createElement(
+        "a"
+    );
+
+    a.href =
+    URL.createObjectURL(
+        blob
+    );
+
+    a.download =
+    "lola-layla-records.json";
+
+    a.click();
+    URL.revokeObjectURL(a.href);
+}
+
+
+
+
+function printRecords(){
+
+    window.print();
+
+}
+
+
+
+
+function saveField(id){
+
+    localStorage.setItem(
+        id,
+        document.getElementById(id).value
+    );
+
+}
+
+
+function saveReminderDates() {
+    const vaccine = document.getElementById("nextVaccine").value;
+    const deworm = document.getElementById("nextDeworm").value;
+
+    if (vaccine) {
+        localStorage.setItem("nextVaccine", vaccine);
+    } else {
+        localStorage.removeItem("nextVaccine");
+    }
+
+    if (deworm) {
+        localStorage.setItem("nextDeworm", deworm);
+    } else {
+        localStorage.removeItem("nextDeworm");
+    }
+
+    updateReminders();
+}
+
+function toggleTheme() {
+    const dark = document.body.classList.toggle("dark");
+    localStorage.setItem("theme", dark ? "dark" : "light");
+    updateThemeButton();
+}
+
+function updateThemeButton() {
+    const button = document.querySelector(".header button");
+    const dark = document.body.classList.contains("dark");
+    button.textContent = dark ? "☀️ Light Mode" : "🌙 Dark Mode";
+}
+
+function drawChart() {
+    const canvas = document.getElementById("chart");
+    const context = canvas.getContext("2d");
+    if (!context) {
+        return;
+    }
+
+    const rect = canvas.getBoundingClientRect();
+    const width = rect.width || canvas.width;
+    const height = rect.height || canvas.height;
+    const scale = window.devicePixelRatio || 1;
+    canvas.width = Math.round(width * scale);
+    canvas.height = Math.round(height * scale);
+    context.setTransform(scale, 0, 0, scale, 0, 0);
+    context.clearRect(0, 0, width, height);
+
+    const padding = 45;
+    const series = [
+        { name: "Lola", records: lolaWeights, color: "#4f46e5" },
+        { name: "Layla", records: laylaWeights, color: "#e67e22" }
+    ];
+    const allRecords = lolaWeights.concat(laylaWeights);
+    if (allRecords.length === 0) {
+        context.fillStyle = getComputedStyle(document.body).getPropertyValue("--muted");
+        context.font = "16px Arial";
+        context.textAlign = "center";
+        context.fillText("No weight records yet", width / 2, height / 2);
+        return;
+    }
+
+    const weights = allRecords.map(record => record.weight);
+    let minWeight = Math.floor(Math.min(...weights));
+    let maxWeight = Math.ceil(Math.max(...weights));
+    if (minWeight === maxWeight) {
+        minWeight -= 1;
+        maxWeight += 1;
+    }
+
+    context.strokeStyle = getComputedStyle(document.body).getPropertyValue("--border");
+    context.fillStyle = getComputedStyle(document.body).getPropertyValue("--muted");
+    context.lineWidth = 1;
+    context.font = "12px Arial";
+    context.textAlign = "right";
+
+    for (let i = 0; i <= 4; i++) {
+        const y = padding + (height - padding * 2) * i / 4;
+        const value = maxWeight - (maxWeight - minWeight) * i / 4;
+        context.beginPath();
+        context.moveTo(padding, y);
+        context.lineTo(width - padding, y);
+        context.stroke();
+        context.fillText(value.toFixed(1), padding - 8, y + 4);
+    }
+
+    series.forEach(item => {
+        if (item.records.length === 0) {
+            return;
+        }
+
+        context.beginPath();
+        context.strokeStyle = item.color;
+        context.lineWidth = 3;
+        item.records.forEach((record, index) => {
+            const x = item.records.length === 1
+                ? width / 2
+                : padding + (width - padding * 2) * index / (item.records.length - 1);
+            const y = padding + (height - padding * 2) *
+                (maxWeight - record.weight) / (maxWeight - minWeight);
+            if (index === 0) {
+                context.moveTo(x, y);
+            } else {
+                context.lineTo(x, y);
+            }
+        });
+        context.stroke();
+    });
+
+    context.textAlign = "left";
+    context.font = "13px Arial";
+    series.forEach((item, index) => {
+        context.fillStyle = item.color;
+        context.fillText(item.name, padding + index * 90, 20);
+    });
+}
+
+function loadData() {
+    renderWeights();
+    updateCurrentWeights();
+    updateAges();
+    updateReminders();
+
+    document.getElementById(
+        "vaccinations"
+    ).value =
+    localStorage.getItem(
+        "vaccinations"
+    ) || "";
+
+    document.getElementById(
+        "deworming"
+    ).value =
+    localStorage.getItem(
+        "deworming"
+    ) || "";
+
+    document.getElementById(
+        "journal"
+    ).value =
+    localStorage.getItem(
+        "journal"
+    ) || "";
+
+    document.getElementById("nextVaccine").value =
+        localStorage.getItem("nextVaccine") || "";
+    document.getElementById("nextDeworm").value =
+        localStorage.getItem("nextDeworm") || "";
+
+    ["lolaPhoto", "laylaPhoto"].forEach(imageId => {
+        const savedPhoto = localStorage.getItem(imageId);
+        if (savedPhoto) {
+            document.getElementById(imageId).src = savedPhoto;
+        }
+    });
+
+    if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark");
+    }
+    updateThemeButton();
+    drawChart();
+}
+
+loadData();
+
+updateAges();
+
+renderWeights();
+
+updateCurrentWeights();
+
+updateReminders();
+
+drawChart();
+
+</script>
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
