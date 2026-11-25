@@ -1,0 +1,1920 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>
+Lola & Layla Pet Tracker
+</title>
+
+<style>
+:root {
+    --background: #f4f7fb;
+    --card: #ffffff;
+    --text: #243447;
+    --muted: #627d98;
+    --primary: #4f46e5;
+    --border: #dfe7ef;
+}
+
+body.dark {
+    --background: #17202a;
+    --card: #22303d;
+    --text: #f4f6f7;
+    --muted: #b4c4ce;
+    --border: #405263;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--background);
+    color: var(--text);
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.title-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.title-photo {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.dashboard-grid{
+
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+.dashboard-item{
+
+    padding:10px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    background:var(--card);
+}
+
+.card {
+    margin: 16px 0;
+    padding: 20px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(36, 52, 71, 0.08);
+}
+
+.grid .card {
+    margin: 0;
+}
+
+input,
+textarea,
+button {
+    font: inherit;
+}
+
+input[type="number"],
+input[type="date"] {
+    min-height: 38px;
+    margin: 4px 8px 8px 0;
+    padding: 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--card);
+    color: var(--text);
+}
+
+textarea {
+    width: 100%;
+    margin: 8px 0;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--card);
+    color: var(--text);
+    resize: vertical;
+}
+
+button {
+    min-height: 38px;
+    margin: 4px 4px 4px 0;
+    padding: 8px 14px;
+    border: 0;
+    border-radius: 6px;
+    background: var(--primary);
+    color: #ffffff;
+    cursor: pointer;
+}
+
+button:hover {
+    filter: brightness(0.92);
+}
+
+.dashboard-photo {
+    display: block;
+    width: 180px;
+    max-width: 100%;
+    height: 180px;
+    object-fit: cover;
+    margin-top: 12px;
+    border-radius: 8px;
+}
+
+canvas {
+    width: 100%;
+    max-width: 900px;
+    height: 300px;
+}
+
+.journal-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.journal-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.journal-form input:not([type="file"]):not([type="radio"]),
+.journal-form select,
+.journal-form textarea {
+    width: 100%;
+    min-height: 38px;
+    padding: 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--card);
+    color: var(--text);
+}
+
+.journal-form textarea {
+    min-height: 84px;
+}
+
+.medical-checklist-group {
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+}
+
+.medical-checklist-group legend {
+    padding: 0 4px;
+    font-weight: bold;
+}
+
+.medical-choice {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center;
+    gap: 8px !important;
+    margin: 4px 0;
+}
+
+.medical-choice input {
+    display: grid;
+    width: 18px;
+    height: 18px;
+    min-height: 18px;
+    margin: 0;
+    padding: 0;
+    appearance: none;
+    place-content: center;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: var(--card);
+}
+
+.medical-choice input::before {
+    width: 5px;
+    height: 9px;
+    content: "";
+    transform: rotate(45deg) scale(0);
+    border: solid #ffffff;
+    border-width: 0 2px 2px 0;
+}
+
+.medical-choice input:checked {
+    background: var(--primary);
+}
+
+.medical-choice input:checked::before {
+    transform: rotate(45deg) scale(1);
+}
+
+.journal-full-width {
+    grid-column: 1 / -1;
+}
+
+.journal-entry {
+    margin-top: 16px;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.journal-entry summary {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.journal-entry[open] summary {
+    margin-bottom: 12px;
+}
+
+.journal-entry p {
+    white-space: pre-wrap;
+}
+
+.journal-entry img {
+    display: block;
+    max-width: 100%;
+    max-height: 280px;
+    margin-top: 10px;
+    border-radius: 8px;
+}
+
+@media print {
+    button,
+    input,
+    textarea {
+        display: none;
+    }
+
+    .card {
+        box-shadow: none;
+        break-inside: avoid;
+    }
+}
+
+@media (max-width: 600px) {
+    .journal-form {
+        grid-template-columns: 1fr;
+    }
+
+    .journal-full-width {
+        grid-column: auto;
+    }
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+
+<div class="title-group">
+<img
+id="titlePhoto"
+class="title-photo"
+src="Photos/Dashtop/IMG_20261115_105250.jpg"
+alt="Lola and Layla">
+
+<h1>
+🐾 Lola & Layla Pet Tracker
+</h1>
+
+<input
+type="file"
+accept="image/*"
+aria-label="Change title photo"
+onchange="uploadTitlePhoto(event)">
+</div>
+
+<button onclick="toggleTheme()">
+🌙 Dark Mode
+</button>
+
+</div>
+
+<div class="card">
+
+<h2>📋 Dashboard</h2>
+
+<p>
+<div class="dashboard-item">
+
+<img
+id="lolaPhotoDashboard"
+class="dashboard-photo"
+src="assets/images/lola.jpg"
+alt="Lola">
+
+<input
+type="file"
+accept="image/*"
+aria-label="Replace Lola dashboard photo"
+onchange="uploadPhoto(event,'lolaPhoto')">
+
+<h3>🐶 Lola</h3>
+
+<p><strong>Breed:</strong>
+Pocket American Bully</p>
+
+<p><strong>DOB:</strong>
+17 September 2026</p>
+
+<p><strong>Age:</strong>
+<span id="lolaAge"></span></p>
+
+<p><strong>Weight:</strong>
+<span data-current-weight="lola">0 kg</span></p>
+
+<p><strong>Food:</strong>
+Royal Canin Mini Puppy</p>
+
+<p><strong>Target Weight:</strong>
+20 kg</p>
+
+</div>
+
+<div class="dashboard-item">
+
+<img
+id="laylaPhotoDashboard"
+class="dashboard-photo"
+src="assets/images/layla.jpg"
+alt="Layla">
+
+<input
+type="file"
+accept="image/*"
+aria-label="Replace Layla dashboard photo"
+onchange="uploadPhoto(event,'laylaPhoto')">
+
+<h3>🐱 Layla</h3>
+
+<p><strong>Species:</strong>
+Domestic Shorthair</p>
+
+<p><strong>DOB:</strong>
+<span id="laylaDobDisplay">16 October 2026</span></p>
+
+<p><strong>Age:</strong>
+<span id="laylaAge"></span></p>
+
+<p><strong>Weight:</strong>
+<span data-current-weight="layla">0 kg</span></p>
+
+<p><strong>Food:</strong>
+KittyMilk + Kitten Food</p>
+
+<p><strong>Status:</strong>
+Weaning</p>
+
+</div>
+
+<p>
+🐶 Current Weight:
+<span data-current-weight="lola">
+0 kg
+</span>
+</p>
+
+<p>
+🐱 Current Weight:
+<span data-current-weight="layla">
+0 kg
+</span>
+</p>
+
+<h3>
+Upcoming Reminders
+</h3>
+
+<ul id="reminders">
+
+</ul>
+
+</div>
+
+<div class="grid">
+
+
+<div class="card">
+
+<h2>
+🐶 Lola
+</h2>
+
+<input
+type="number"
+id="lolaWeight"
+step="0.1"
+placeholder="Weight">
+
+<button onclick="addWeight('lola')">
+Save Weight
+</button>
+
+<h3>
+Weight History
+</h3>
+
+<ul id="lolaWeightList">
+
+</ul>
+
+</div>
+
+<div class="card">
+
+<h2>
+🐱 Layla
+</h2>
+
+<input
+type="number"
+id="laylaWeight"
+step="0.1"
+placeholder="Weight">
+
+<button onclick="addWeight('layla')">
+Save Weight
+</button>
+
+<h3>
+Weight History
+</h3>
+
+<ul id="laylaWeightList">
+
+</ul>
+
+</div>
+
+</div>
+
+
+<h2>Charts</h2>
+
+<div class="card">
+
+<h3>Lola's Weight and Growth Chart</h3>
+
+<canvas
+id="lolaChart"
+width="900"
+height="300">
+</canvas>
+
+</div>
+
+<div class="card">
+
+<h3>Layla's Weight and Growth Chart</h3>
+
+<canvas
+id="laylaChart"
+width="900"
+height="300">
+</canvas>
+
+</div>
+
+<div class="card">
+
+<h2>
+💉 Lola's Health Schedule
+</h2>
+
+<label for="lolaNextVaccine">
+Next Vaccination
+</label>
+
+<input
+type="date"
+id="lolaNextVaccine">
+
+<label for="lolaNextDeworm">
+Next Deworming
+</label>
+
+<input
+type="date"
+id="lolaNextDeworm">
+
+<button onclick="saveReminderDates('lola')">
+Save Lola's Schedule
+</button>
+
+</div>
+
+<div class="card">
+
+<h2>
+💉 Layla's Health Schedule
+</h2>
+
+<label for="laylaNextVaccine">
+Next Vaccination
+</label>
+
+<input
+type="date"
+id="laylaNextVaccine">
+
+<label for="laylaNextDeworm">
+Next Deworming
+</label>
+
+<input
+type="date"
+id="laylaNextDeworm">
+
+<button onclick="saveReminderDates('layla')">
+Save Layla's Schedule
+</button>
+
+</div>
+
+<div class="card">
+
+<h2>
+🩺 Medical Journal
+</h2>
+
+<div class="journal-form">
+<label>
+Date
+<input type="date" id="medicalDate" required>
+</label>
+
+<label>
+Pet
+<select id="medicalPet" required>
+<option value="lola">Lola</option>
+<option value="layla">Layla</option>
+</select>
+</label>
+
+<label>
+Reason
+<input type="text" id="medicalReason" required>
+</label>
+
+<h3 class="journal-full-width">Health Checklist</h3>
+
+<fieldset class="medical-checklist-group">
+<legend>💧 Water Intake</legend>
+<label class="medical-choice"><input type="radio" name="medicalWaterIntake" value="Normal"> Normal</label>
+<label class="medical-choice"><input type="radio" name="medicalWaterIntake" value="Reduced"> Reduced</label>
+<label class="medical-choice"><input type="radio" name="medicalWaterIntake" value="Increased"> Increased</label>
+</fieldset>
+
+<fieldset class="medical-checklist-group">
+<legend>🍖 Appetite</legend>
+<label class="medical-choice"><input type="radio" name="medicalAppetite" value="Normal"> Normal</label>
+<label class="medical-choice"><input type="radio" name="medicalAppetite" value="Reduced"> Reduced</label>
+<label class="medical-choice"><input type="radio" name="medicalAppetite" value="Increased"> Increased</label>
+<label class="medical-choice"><input type="radio" name="medicalAppetite" value="Not Eating"> Not Eating</label>
+</fieldset>
+
+<fieldset class="medical-checklist-group">
+<legend>⚡ Energy</legend>
+<label class="medical-choice"><input type="radio" name="medicalEnergy" value="Normal"> Normal</label>
+<label class="medical-choice"><input type="radio" name="medicalEnergy" value="Reduced"> Reduced</label>
+<label class="medical-choice"><input type="radio" name="medicalEnergy" value="Hyperactive"> Hyperactive</label>
+</fieldset>
+
+<fieldset class="medical-checklist-group">
+<legend>🤢 Vomiting</legend>
+<label class="medical-choice"><input type="radio" name="medicalVomiting" value="Yes"> Yes</label>
+<label class="medical-choice"><input type="radio" name="medicalVomiting" value="No"> No</label>
+</fieldset>
+
+<h3 class="journal-full-width">💊 Medication</h3>
+
+<label>
+Medication
+<input type="text" id="medicalMedication">
+</label>
+
+<label>
+Dose
+<input type="text" id="medicalDose">
+</label>
+
+<label>
+Frequency
+<input type="text" id="medicalFrequency">
+</label>
+
+<label>
+😀 General Condition
+<select id="medicalGeneralCondition">
+<option value="">Select condition</option>
+<option value="Bright and Alert">Bright and Alert</option>
+<option value="Quiet">Quiet</option>
+<option value="Lethargic">Lethargic</option>
+<option value="Unwell">Unwell</option>
+</select>
+</label>
+
+<label class="journal-full-width">
+Symptoms
+<textarea id="medicalSymptoms" rows="3"></textarea>
+</label>
+
+<label class="journal-full-width">
+Treatment
+<textarea id="medicalTreatment" rows="3"></textarea>
+</label>
+
+<label>
+Vet Visit
+<input type="text" id="medicalVetVisit" placeholder="Visit details, or leave blank">
+</label>
+
+<label>
+Outcome
+<input type="text" id="medicalOutcome">
+</label>
+</div>
+
+<button onclick="saveMedicalEntry()">
+Add Medical Entry
+</button>
+<div id="medicalEntries"></div>
+</div>
+
+<div class="card">
+
+<h2>
+📝 Memories Journal
+</h2>
+
+<div class="journal-form">
+<label>
+Date
+<input type="date" id="memoryDate" required>
+</label>
+
+<label>
+Activity
+<input type="text" id="memoryActivity" required>
+</label>
+
+<label class="journal-full-width">
+Comment
+<textarea id="memoryComment" rows="4"></textarea>
+</label>
+
+<label class="journal-full-width">
+Picture
+<input type="file" id="memoryPicture" accept="image/*">
+</label>
+</div>
+
+<button onclick="saveMemoryEntry()">
+Add Memory
+</button>
+<div id="memoryEntries"></div>
+
+<details id="legacyJournalSection" hidden>
+<summary>Previous journal notes</summary>
+<p id="legacyJournalNotes"></p>
+</details>
+
+</div>
+
+<div class="card">
+
+<h2>
+📁 Data Management
+</h2>
+
+<button onclick="exportData()">
+Export Records
+</button>
+
+<input
+type="file"
+id="backupFile"
+accept=".json,application/json"
+aria-label="Choose a backup JSON file">
+
+<button onclick="restoreBackup()">
+Restore Backup
+</button>
+
+<button onclick="printRecords()">
+Print Records
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+
+const lolaDOB =
+new Date("2026-09-17");
+const laylaDOB =
+new Date("2026-10-16");
+
+const lolaWeights =
+loadWeightRecords("lolaWeights");
+
+const laylaWeights =
+loadWeightRecords("laylaWeights");
+
+let medicalEntries = [];
+let memoryEntries = [];
+let legacyJournal = "";
+let journalDataLoaded = false;
+
+function loadWeightRecords(key) {
+    try {
+        const records = JSON.parse(localStorage.getItem(key) || "[]");
+        return Array.isArray(records)
+            ? records.filter(record =>
+                record &&
+                typeof record.weight === "number" &&
+                Number.isFinite(record.weight) &&
+                typeof record.date === "string"
+            )
+            : [];
+    } catch (error) {
+        console.warn(`Could not load ${key}`, error);
+        return [];
+    }
+}
+
+function getLocalDateKey(date) {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+}
+
+function calculateAge(dob) {
+
+    const today = new Date();
+
+    const diffTime =
+        today - dob;
+
+    const totalDays =
+        Math.floor(
+            diffTime /
+            (1000 * 60 * 60 * 24)
+        );
+
+    const weeks =
+        Math.floor(totalDays / 7);
+
+    const months =
+        Math.floor(totalDays / 30.44);
+
+    const remainingDays =
+        totalDays % 7;
+
+    if(months < 3){
+
+        return `${weeks} weeks, ${remainingDays} days`;
+    }
+
+    return `${months} months, ${remainingDays} days`;
+}
+
+function updateAges(){
+
+    document.getElementById(
+        "lolaAge"
+    ).innerText =
+    calculateAge(lolaDOB);
+
+    document.getElementById(
+        "laylaAge"
+    ).innerText =
+    calculateAge(laylaDOB);
+}
+
+function addWeight(pet){
+
+    let input =
+    pet === "lola"
+    ? document.getElementById("lolaWeight")
+    : document.getElementById("laylaWeight");
+
+    let weight =
+    parseFloat(input.value);
+
+    if (!Number.isFinite(weight) || weight <= 0) {
+        input.setCustomValidity("Please enter a weight greater than zero.");
+        input.reportValidity();
+        return;
+    }
+
+    input.setCustomValidity("");
+
+    const measurementDate = new Date();
+    let record = {
+
+        date:
+        measurementDate.toLocaleDateString(),
+
+        dateISO:
+        getLocalDateKey(measurementDate),
+
+        weight:weight
+    };
+
+    if(pet === "lola"){
+
+        lolaWeights.push(record);
+
+        localStorage.setItem(
+            "lolaWeights",
+            JSON.stringify(
+                lolaWeights
+            )
+        );
+
+    }else{
+
+        laylaWeights.push(record);
+
+        localStorage.setItem(
+            "laylaWeights",
+            JSON.stringify(
+                laylaWeights
+            )
+        );
+    }
+
+    input.value = "";
+
+    renderWeights();
+
+    updateCurrentWeights();
+    drawChart();
+}
+
+function renderWeights(){
+
+    document.getElementById(
+        "lolaWeightList"
+    ).innerHTML =
+
+    lolaWeights.map(w =>
+        `<li>${w.date} - ${w.weight} kg</li>`
+    ).join("");
+
+    document.getElementById(
+        "laylaWeightList"
+    ).innerHTML =
+
+    laylaWeights.map(w =>
+        `<li>${w.date} - ${w.weight} kg</li>`
+    ).join("");
+}
+
+
+
+function updateCurrentWeights(){
+
+    [
+        { pet: "lola", records: lolaWeights },
+        { pet: "layla", records: laylaWeights }
+    ].forEach(({ pet, records }) => {
+        const currentWeight = records.length > 0
+            ? `${records[records.length - 1].weight} kg`
+            : "0 kg";
+
+        document.querySelectorAll(
+            `[data-current-weight="${pet}"]`
+        ).forEach(display => {
+            display.innerText = currentWeight;
+        });
+    });
+}
+
+
+function uploadPhoto(
+event,
+imageId
+){
+    const file = event.target.files && event.target.files[0];
+    if (!file) {
+        return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+        alert("Please select an image file.");
+        event.target.value = "";
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function() {
+        setPetPhoto(imageId, reader.result);
+        localStorage.setItem(imageId, reader.result);
+    };
+    reader.onerror = function() {
+        alert("The photo could not be read.");
+    };
+    reader.readAsDataURL(file);
+}
+
+function uploadTitlePhoto(event) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) {
+        return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+        alert("Please select an image file.");
+        event.target.value = "";
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function() {
+        if (typeof reader.result !== "string") {
+            alert("The photo could not be read.");
+            return;
+        }
+
+        localStorage.setItem("titlePhoto", reader.result);
+        document.getElementById("titlePhoto").src = reader.result;
+    };
+    reader.onerror = function() {
+        alert("The photo could not be read.");
+    };
+    reader.readAsDataURL(file);
+}
+
+function setPetPhoto(imageId, source) {
+    document.getElementById(`${imageId}Dashboard`).src = source;
+}
+
+
+
+function updateReminders(){
+
+    let html = "";
+
+    [
+        { pet: "Lola", emoji: "🐶", key: "lola" },
+        { pet: "Layla", emoji: "🐱", key: "layla" }
+    ].forEach(schedule => {
+        const vaccine = localStorage.getItem(`${schedule.key}NextVaccine`);
+        const deworm = localStorage.getItem(`${schedule.key}NextDeworm`);
+
+        if (vaccine) {
+            html += `<li>${schedule.emoji} ${schedule.pet} — Next Vaccination: ${vaccine}</li>`;
+        }
+
+        if (deworm) {
+            html += `<li>${schedule.emoji} ${schedule.pet} — Next Deworming: ${deworm}</li>`;
+        }
+    });
+
+    document.getElementById(
+        "reminders"
+    ).innerHTML = html;
+}
+
+
+
+
+function exportData(){
+
+    if (!journalDataLoaded) {
+        alert("Journal data is still loading. Please try again.");
+        return;
+    }
+
+    const exportedAt = new Date();
+    const timestamp = exportedAt.toISOString().replace(/[:.]/g, "-");
+    const data = {
+        exportedAt: exportedAt.toISOString(),
+        lolaWeights,
+        laylaWeights,
+        vaccinations: localStorage.getItem("vaccinations") || "",
+        deworming: localStorage.getItem("deworming") || "",
+        journal: legacyJournal,
+        medicalEntries,
+        memoryEntries,
+        lolaNextVaccine: localStorage.getItem("lolaNextVaccine"),
+        lolaNextDeworm: localStorage.getItem("lolaNextDeworm"),
+        laylaNextVaccine: localStorage.getItem("laylaNextVaccine"),
+        laylaNextDeworm: localStorage.getItem("laylaNextDeworm")
+    };
+
+    const blob =
+    new Blob(
+        [
+            JSON.stringify(
+                data,
+                null,
+                2
+            )
+        ],
+        {
+            type:
+            "application/json"
+        }
+    );
+
+    const a =
+    document.createElement(
+        "a"
+    );
+
+    a.href =
+    URL.createObjectURL(
+        blob
+    );
+
+    a.download =
+    `lola-layla-records-${timestamp}.json`;
+
+    a.click();
+    URL.revokeObjectURL(a.href);
+}
+
+function isValidJournalDate(value) {
+    if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+        return false;
+    }
+    const date = new Date(`${value}T00:00:00Z`);
+    return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
+}
+
+function normalizeMedicalEntry(entry) {
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+        throw new Error("Stored medical journal entry is invalid.");
+    }
+    return {
+        ...entry,
+        dose: entry.dose || "",
+        frequency: entry.frequency || "",
+        waterIntake: entry.waterIntake || "",
+        appetite: entry.appetite || "",
+        energy: entry.energy || "",
+        vomiting: entry.vomiting || "",
+        generalCondition: entry.generalCondition || ""
+    };
+}
+
+function validateBackup(data) {
+    if (!data || typeof data !== "object" || Array.isArray(data)) {
+        throw new Error("The file must contain a backup object.");
+    }
+
+    ["lolaWeights", "laylaWeights"].forEach(key => {
+        if (!Array.isArray(data[key]) || !data[key].every(record =>
+            record &&
+            typeof record === "object" &&
+            typeof record.date === "string" &&
+            record.date.trim() !== "" &&
+            typeof record.weight === "number" &&
+            Number.isFinite(record.weight) &&
+            record.weight > 0
+        )) {
+            throw new Error(`The backup has invalid ${key} records.`);
+        }
+    });
+
+    const medicalEntries = data.medicalEntries === undefined ? [] : data.medicalEntries;
+    if (!Array.isArray(medicalEntries) || !medicalEntries.every(entry =>
+        entry &&
+        typeof entry === "object" &&
+        isValidJournalDate(entry.date) &&
+        (entry.pet === "lola" || entry.pet === "layla") &&
+        typeof entry.reason === "string" &&
+        entry.reason.trim() !== "" &&
+        typeof entry.symptoms === "string" &&
+        typeof entry.treatment === "string" &&
+        typeof entry.medication === "string" &&
+        typeof entry.vetVisit === "string" &&
+        typeof entry.outcome === "string" &&
+        (entry.dose === undefined || typeof entry.dose === "string") &&
+        (entry.frequency === undefined || typeof entry.frequency === "string") &&
+        (entry.waterIntake === undefined || ["", "Normal", "Reduced", "Increased"].includes(entry.waterIntake)) &&
+        (entry.appetite === undefined || ["", "Normal", "Reduced", "Increased", "Not Eating"].includes(entry.appetite)) &&
+        (entry.energy === undefined || ["", "Normal", "Reduced", "Hyperactive"].includes(entry.energy)) &&
+        (entry.vomiting === undefined || ["", "Yes", "No"].includes(entry.vomiting)) &&
+        (entry.generalCondition === undefined ||
+            ["", "Bright and Alert", "Quiet", "Lethargic", "Unwell"].includes(entry.generalCondition))
+    )) {
+        throw new Error("The backup has invalid medical journal entries.");
+    }
+    const normalizedMedicalEntries = medicalEntries.map(normalizeMedicalEntry);
+
+    const memoryEntries = data.memoryEntries === undefined ? [] : data.memoryEntries;
+    if (!Array.isArray(memoryEntries) || !memoryEntries.every(entry =>
+        entry &&
+        typeof entry === "object" &&
+        isValidJournalDate(entry.date) &&
+        typeof entry.activity === "string" &&
+        entry.activity.trim() !== "" &&
+        typeof entry.comment === "string" &&
+        (entry.image === "" ||
+            (typeof entry.image === "string" && /^data:image\/[a-z0-9.+-]+;base64,/i.test(entry.image)))
+    )) {
+        throw new Error("The backup has invalid memories journal entries.");
+    }
+
+    ["vaccinations", "deworming", "journal"].forEach(key => {
+        if (typeof data[key] !== "string") {
+            throw new Error(`The backup is missing valid ${key} text.`);
+        }
+    });
+
+    function readDate(key, legacyKey) {
+        const value = Object.prototype.hasOwnProperty.call(data, key)
+            ? data[key]
+            : legacyKey && Object.prototype.hasOwnProperty.call(data, legacyKey)
+                ? data[legacyKey]
+                : null;
+        if (value === null || value === undefined || value === "") {
+            return "";
+        }
+
+        if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+            throw new Error(`The backup has an invalid ${key} date.`);
+        }
+
+        const date = new Date(`${value}T00:00:00Z`);
+        if (Number.isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== value) {
+            throw new Error(`The backup has an invalid ${key} date.`);
+        }
+        return value;
+    }
+
+    return {
+        lolaWeights: data.lolaWeights,
+        laylaWeights: data.laylaWeights,
+        vaccinations: data.vaccinations,
+        deworming: data.deworming,
+        journal: data.journal,
+        medicalEntries: normalizedMedicalEntries,
+        memoryEntries,
+        lolaNextVaccine: readDate("lolaNextVaccine", "nextVaccine"),
+        lolaNextDeworm: readDate("lolaNextDeworm", "nextDeworm"),
+        laylaNextVaccine: readDate("laylaNextVaccine", "nextVaccine"),
+        laylaNextDeworm: readDate("laylaNextDeworm", "nextDeworm")
+    };
+}
+
+async function restoreBackup() {
+    const fileInput = document.getElementById("backupFile");
+    const file = fileInput.files && fileInput.files[0];
+    if (!file) {
+        alert("Choose a backup JSON file first.");
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async function() {
+        try {
+            if (typeof reader.result !== "string") {
+                throw new Error("The backup file could not be read.");
+            }
+            const backup = validateBackup(JSON.parse(reader.result));
+            await applyBackup(backup);
+        } catch (error) {
+            alert(`Backup could not be restored: ${error.message}`);
+        } finally {
+            fileInput.value = "";
+        }
+    };
+    reader.onerror = function() {
+        fileInput.value = "";
+        alert("The backup file could not be read.");
+    };
+    reader.readAsText(file);
+}
+
+async function applyBackup(backup) {
+    if (!confirm("Restore this backup? It will replace current weights, medical and memories journal entries, and reminder dates. Dashboard photos and theme settings will be kept.")) {
+        return;
+    }
+
+    const keys = [
+        "lolaWeights",
+        "laylaWeights",
+        "vaccinations",
+        "deworming",
+        "journal",
+        "lolaNextVaccine",
+        "lolaNextDeworm",
+        "laylaNextVaccine",
+        "laylaNextDeworm"
+    ];
+    const previous = {};
+    keys.forEach(key => {
+        previous[key] = localStorage.getItem(key);
+    });
+
+    try {
+        localStorage.setItem("lolaWeights", JSON.stringify(backup.lolaWeights));
+        localStorage.setItem("laylaWeights", JSON.stringify(backup.laylaWeights));
+        localStorage.setItem("vaccinations", backup.vaccinations);
+        localStorage.setItem("deworming", backup.deworming);
+        localStorage.setItem("lolaNextVaccine", backup.lolaNextVaccine);
+        localStorage.setItem("lolaNextDeworm", backup.lolaNextDeworm);
+        localStorage.setItem("laylaNextVaccine", backup.laylaNextVaccine);
+        localStorage.setItem("laylaNextDeworm", backup.laylaNextDeworm);
+
+        const database = await openJournalDatabase();
+        try {
+            await writeJournalDataToDatabase(database, {
+                journal: backup.journal,
+                medicalEntries: backup.medicalEntries,
+                memoryEntries: backup.memoryEntries
+            });
+        } finally {
+            database.close();
+        }
+        localStorage.removeItem("journal");
+    } catch (error) {
+        let rollbackFailed = false;
+        keys.forEach(key => {
+            try {
+                localStorage.removeItem(key);
+            } catch (rollbackError) {
+                rollbackFailed = true;
+                console.error(`Could not clear partial ${key} data.`, rollbackError);
+            }
+        });
+        keys.forEach(key => {
+            if (previous[key] !== null) {
+                try {
+                    localStorage.setItem(key, previous[key]);
+                } catch (rollbackError) {
+                    rollbackFailed = true;
+                    console.error(`Could not restore previous ${key} data.`, rollbackError);
+                }
+            }
+        });
+        console.error("Could not restore backup data.", error);
+        alert(rollbackFailed
+            ? "Backup restore failed, and some previous data could not be restored. Check browser storage."
+            : "Backup restore failed; previous data was restored. Check browser storage and try again.");
+        return;
+    }
+
+    lolaWeights.length = 0;
+    backup.lolaWeights.forEach(record => lolaWeights.push(record));
+    laylaWeights.length = 0;
+    backup.laylaWeights.forEach(record => laylaWeights.push(record));
+    legacyJournal = backup.journal;
+    medicalEntries = backup.medicalEntries;
+    memoryEntries = backup.memoryEntries;
+    journalDataLoaded = true;
+
+    [
+        "lolaNextVaccine",
+        "lolaNextDeworm",
+        "laylaNextVaccine",
+        "laylaNextDeworm"
+    ].forEach(fieldId => {
+        document.getElementById(fieldId).value = backup[fieldId];
+    });
+
+    renderWeights();
+    renderMedicalEntries();
+    renderMemoryEntries();
+    renderLegacyJournal();
+    updateCurrentWeights();
+    updateReminders();
+    drawChart();
+    alert("Backup restored successfully.");
+}
+
+
+
+
+function printRecords(){
+
+    window.print();
+
+}
+
+
+
+
+function openJournalDatabase() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open("lolaLaylaTracker", 1);
+        request.onupgradeneeded = () => {
+            request.result.createObjectStore("entries");
+        };
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(
+            request.error || new Error("Could not open journal storage.")
+        );
+    });
+}
+
+function readJournalValueFromDatabase(database, key) {
+    return new Promise((resolve, reject) => {
+        const request = database
+            .transaction("entries", "readonly")
+            .objectStore("entries")
+            .get(key);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(
+            request.error || new Error(`Could not read ${key} from journal storage.`)
+        );
+    });
+}
+
+function writeJournalDataToDatabase(database, values) {
+    return new Promise((resolve, reject) => {
+        const transaction = database.transaction("entries", "readwrite");
+        const store = transaction.objectStore("entries");
+        Object.keys(values).forEach(key => store.put(values[key], key));
+        transaction.oncomplete = resolve;
+        transaction.onerror = () => reject(
+            transaction.error || new Error("Could not save journal data.")
+        );
+        transaction.onabort = () => reject(
+            transaction.error || new Error("Journal save was cancelled.")
+        );
+    });
+}
+
+async function saveJournalCollection(key, entries) {
+    const database = await openJournalDatabase();
+    try {
+        await writeJournalDataToDatabase(database, { [key]: entries });
+    } finally {
+        database.close();
+    }
+}
+
+function setJournalDateDefaults() {
+    const today = getLocalDateKey(new Date());
+    document.getElementById("medicalDate").value = today;
+    document.getElementById("memoryDate").value = today;
+}
+
+function formatJournalDate(value) {
+    return isValidJournalDate(value)
+        ? new Date(`${value}T00:00:00`).toLocaleDateString()
+        : "Date unavailable";
+}
+
+function appendJournalField(container, labelText, value) {
+    if (!value) {
+        return;
+    }
+
+    const paragraph = document.createElement("p");
+    const label = document.createElement("strong");
+    label.textContent = `${labelText}:`;
+    paragraph.append(label, document.createTextNode(` ${value}`));
+    container.appendChild(paragraph);
+}
+
+function renderMedicalEntries() {
+    const container = document.getElementById("medicalEntries");
+    container.replaceChildren();
+    if (medicalEntries.length === 0) {
+        container.textContent = "No medical entries yet.";
+        return;
+    }
+
+    medicalEntries.slice().reverse().forEach(entry => {
+        const details = document.createElement("details");
+        details.className = "journal-entry";
+        const summary = document.createElement("summary");
+        summary.textContent = `${formatJournalDate(entry.date)} — ${entry.pet === "lola" ? "Lola" : "Layla"}`;
+        details.appendChild(summary);
+
+        const content = document.createElement("div");
+        appendJournalField(content, "Date", formatJournalDate(entry.date));
+        appendJournalField(content, "Pet", entry.pet === "lola" ? "Lola" : "Layla");
+        appendJournalField(content, "Reason", entry.reason);
+        appendJournalField(content, "Water Intake", entry.waterIntake);
+        appendJournalField(content, "Appetite", entry.appetite);
+        appendJournalField(content, "Energy", entry.energy);
+        appendJournalField(content, "Vomiting", entry.vomiting);
+        appendJournalField(content, "Symptoms", entry.symptoms);
+        appendJournalField(content, "Treatment", entry.treatment);
+        appendJournalField(content, "Medication", entry.medication);
+        appendJournalField(content, "Dose", entry.dose);
+        appendJournalField(content, "Frequency", entry.frequency);
+        appendJournalField(content, "General Condition", entry.generalCondition);
+        appendJournalField(content, "Vet Visit", entry.vetVisit);
+        appendJournalField(content, "Outcome", entry.outcome);
+        details.appendChild(content);
+        container.appendChild(details);
+    });
+}
+
+function renderMemoryEntries() {
+    const container = document.getElementById("memoryEntries");
+    container.replaceChildren();
+    if (memoryEntries.length === 0) {
+        container.textContent = "No memories yet.";
+        return;
+    }
+
+    memoryEntries.slice().reverse().forEach(entry => {
+        const article = document.createElement("article");
+        article.className = "journal-entry";
+        const heading = document.createElement("h3");
+        heading.textContent = `${formatJournalDate(entry.date)} — ${entry.activity}`;
+        article.appendChild(heading);
+        appendJournalField(article, "Comment", entry.comment);
+        if (entry.image) {
+            const image = document.createElement("img");
+            image.src = entry.image;
+            image.alt = `Picture for ${entry.activity}`;
+            article.appendChild(image);
+        }
+        container.appendChild(article);
+    });
+}
+
+function renderLegacyJournal() {
+    const section = document.getElementById("legacyJournalSection");
+    section.hidden = !legacyJournal.trim();
+    document.getElementById("legacyJournalNotes").textContent = legacyJournal;
+}
+
+function getSelectedMedicalOption(name) {
+    const selected = document.querySelector(`input[name="${name}"]:checked`);
+    return selected ? selected.value : "";
+}
+
+async function saveMedicalEntry() {
+    if (!journalDataLoaded) {
+        alert("Journal data is still loading. Please try again.");
+        return;
+    }
+
+    const entry = {
+        date: document.getElementById("medicalDate").value,
+        pet: document.getElementById("medicalPet").value,
+        reason: document.getElementById("medicalReason").value.trim(),
+        waterIntake: getSelectedMedicalOption("medicalWaterIntake"),
+        appetite: getSelectedMedicalOption("medicalAppetite"),
+        energy: getSelectedMedicalOption("medicalEnergy"),
+        vomiting: getSelectedMedicalOption("medicalVomiting"),
+        symptoms: document.getElementById("medicalSymptoms").value.trim(),
+        treatment: document.getElementById("medicalTreatment").value.trim(),
+        medication: document.getElementById("medicalMedication").value.trim(),
+        dose: document.getElementById("medicalDose").value.trim(),
+        frequency: document.getElementById("medicalFrequency").value.trim(),
+        generalCondition: document.getElementById("medicalGeneralCondition").value,
+        vetVisit: document.getElementById("medicalVetVisit").value.trim(),
+        outcome: document.getElementById("medicalOutcome").value.trim()
+    };
+    if (!isValidJournalDate(entry.date) || !["lola", "layla"].includes(entry.pet) || !entry.reason) {
+        alert("Enter a valid date, pet, and reason for the medical entry.");
+        return;
+    }
+
+    const nextEntries = medicalEntries.concat(entry);
+    try {
+        await saveJournalCollection("medicalEntries", nextEntries);
+        medicalEntries = nextEntries;
+        renderMedicalEntries();
+        [
+            "medicalReason",
+            "medicalSymptoms",
+            "medicalTreatment",
+            "medicalMedication",
+            "medicalDose",
+            "medicalFrequency",
+            "medicalVetVisit",
+            "medicalOutcome"
+        ]
+            .forEach(id => {
+                document.getElementById(id).value = "";
+            });
+        document.querySelectorAll('input[name^="medical"]:checked').forEach(input => {
+            input.checked = false;
+        });
+        document.getElementById("medicalGeneralCondition").value = "";
+        document.getElementById("medicalDate").value = getLocalDateKey(new Date());
+    } catch (error) {
+        console.error("Could not save the medical journal entry.", error);
+        alert("The medical entry could not be saved. Browser storage may be full or unavailable.");
+    }
+}
+
+function readImageAsDataUrl(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            if (typeof reader.result === "string") {
+                resolve(reader.result);
+            } else {
+                reject(new Error("The picture could not be read."));
+            }
+        };
+        reader.onerror = () => reject(
+            reader.error || new Error("The picture could not be read.")
+        );
+        reader.readAsDataURL(file);
+    });
+}
+
+async function saveMemoryEntry() {
+    if (!journalDataLoaded) {
+        alert("Journal data is still loading. Please try again.");
+        return;
+    }
+
+    const date = document.getElementById("memoryDate").value;
+    const activity = document.getElementById("memoryActivity").value.trim();
+    const fileInput = document.getElementById("memoryPicture");
+    const file = fileInput.files && fileInput.files[0];
+    if (!isValidJournalDate(date) || !activity) {
+        alert("Enter a valid date and activity for the memory.");
+        return;
+    }
+    if (file && !file.type.startsWith("image/")) {
+        alert("Please select an image file for the memory.");
+        fileInput.value = "";
+        return;
+    }
+
+    try {
+        const image = file ? await readImageAsDataUrl(file) : "";
+        const nextEntries = memoryEntries.concat({
+            date,
+            activity,
+            comment: document.getElementById("memoryComment").value.trim(),
+            image
+        });
+        await saveJournalCollection("memoryEntries", nextEntries);
+        memoryEntries = nextEntries;
+        renderMemoryEntries();
+        document.getElementById("memoryActivity").value = "";
+        document.getElementById("memoryComment").value = "";
+        fileInput.value = "";
+        document.getElementById("memoryDate").value = getLocalDateKey(new Date());
+    } catch (error) {
+        console.error("Could not save the memory journal entry.", error);
+        alert("The memory could not be saved. Check the picture and available browser storage.");
+    }
+}
+
+async function loadJournal() {
+    const savedLegacyJournal = localStorage.getItem("journal");
+
+    try {
+        const database = await openJournalDatabase();
+        try {
+            const [savedJournal, savedMedicalEntries, savedMemoryEntries] = await Promise.all([
+                readJournalValueFromDatabase(database, "journal"),
+                readJournalValueFromDatabase(database, "medicalEntries"),
+                readJournalValueFromDatabase(database, "memoryEntries")
+            ]);
+            if (typeof savedJournal === "string") {
+                legacyJournal = savedJournal;
+                if (savedLegacyJournal !== null) {
+                    localStorage.removeItem("journal");
+                }
+            } else if (savedLegacyJournal !== null) {
+                legacyJournal = savedLegacyJournal;
+                await writeJournalDataToDatabase(database, { journal: legacyJournal });
+                localStorage.removeItem("journal");
+            }
+            medicalEntries = Array.isArray(savedMedicalEntries)
+                ? savedMedicalEntries.map(normalizeMedicalEntry)
+                : [];
+            memoryEntries = Array.isArray(savedMemoryEntries) ? savedMemoryEntries : [];
+        } finally {
+            database.close();
+        }
+        journalDataLoaded = true;
+    } catch (error) {
+        legacyJournal = savedLegacyJournal || "";
+        console.error("Could not load journal entries from browser storage.", error);
+        alert("The journals could not be loaded from browser storage. Please reload and try again.");
+    }
+    renderMedicalEntries();
+    renderMemoryEntries();
+    renderLegacyJournal();
+}
+
+
+function saveReminderDates(pet) {
+    const vaccineKey = `${pet}NextVaccine`;
+    const dewormKey = `${pet}NextDeworm`;
+    const vaccine = document.getElementById(vaccineKey).value;
+    const deworm = document.getElementById(dewormKey).value;
+
+    if (vaccine) {
+        localStorage.setItem(vaccineKey, vaccine);
+    } else {
+        localStorage.removeItem(vaccineKey);
+    }
+
+    if (deworm) {
+        localStorage.setItem(dewormKey, deworm);
+    } else {
+        localStorage.removeItem(dewormKey);
+    }
+
+    updateReminders();
+}
+
+function toggleTheme() {
+    const dark = document.body.classList.toggle("dark");
+    localStorage.setItem("theme", dark ? "dark" : "light");
+    updateThemeButton();
+}
+
+function updateThemeButton() {
+    const button = document.querySelector(".header button");
+    const dark = document.body.classList.contains("dark");
+    button.textContent = dark ? "☀️ Light Mode" : "🌙 Dark Mode";
+}
+
+function migrateReminderDates() {
+    [
+        { legacyKey: "nextVaccine", suffix: "NextVaccine" },
+        { legacyKey: "nextDeworm", suffix: "NextDeworm" }
+    ].forEach(({ legacyKey, suffix }) => {
+        const legacyValue = localStorage.getItem(legacyKey);
+        if (legacyValue === null) {
+            return;
+        }
+
+        ["lola", "layla"].forEach(pet => {
+            const key = `${pet}${suffix}`;
+            if (localStorage.getItem(key) === null) {
+                localStorage.setItem(key, legacyValue);
+            }
+        });
+
+        localStorage.removeItem(legacyKey);
+    });
+}
+
+function drawChart() {
+    drawWeightChart("lolaChart", lolaWeights, lolaDOB, "#4f46e5");
+    drawWeightChart("laylaChart", laylaWeights, laylaDOB, "#e67e22");
+}
+
+function getMeasurementDate(record) {
+    const isoMatch = typeof record.dateISO === "string"
+        ? record.dateISO.match(/^(\d{4})-(\d{2})-(\d{2})$/)
+        : null;
+    if (isoMatch) {
+        const year = Number(isoMatch[1]);
+        const month = Number(isoMatch[2]) - 1;
+        const day = Number(isoMatch[3]);
+        const timestamp = Date.UTC(year, month, day);
+        const parsedDate = new Date(timestamp);
+        if (
+            parsedDate.getUTCFullYear() === year &&
+            parsedDate.getUTCMonth() === month &&
+            parsedDate.getUTCDate() === day
+        ) {
+            return timestamp;
+        }
+        return null;
+    }
+
+    const legacyDate = new Date(record.date);
+    if (Number.isNaN(legacyDate.getTime())) {
+        return null;
+    }
+    return Date.UTC(
+        legacyDate.getFullYear(),
+        legacyDate.getMonth(),
+        legacyDate.getDate()
+    );
+}
+
+function drawWeightChart(canvasId, records, dob, color) {
+    const canvas = document.getElementById(canvasId);
+    const context = canvas.getContext("2d");
+    if (!context) {
+        return;
+    }
+
+    const rect = canvas.getBoundingClientRect();
+    const width = rect.width || canvas.width;
+    const height = rect.height || canvas.height;
+    const scale = window.devicePixelRatio || 1;
+    canvas.width = Math.round(width * scale);
+    canvas.height = Math.round(height * scale);
+    context.setTransform(scale, 0, 0, scale, 0, 0);
+    context.clearRect(0, 0, width, height);
+
+    const padding = 45;
+    if (records.length === 0) {
+        context.fillStyle = getComputedStyle(document.body).getPropertyValue("--muted");
+        context.font = "16px Arial";
+        context.textAlign = "center";
+        context.fillText("No weight records yet", width / 2, height / 2);
+        return;
+    }
+
+    const birthDate = Date.UTC(
+        dob.getUTCFullYear(),
+        dob.getUTCMonth(),
+        dob.getUTCDate()
+    );
+    const points = records
+        .map(record => {
+            const measurementDate = getMeasurementDate(record);
+            return measurementDate === null
+                ? null
+                : {
+                    ageWeeks: (measurementDate - birthDate) / (7 * 24 * 60 * 60 * 1000),
+                    weight: record.weight
+                };
+        })
+        .filter(point => point && Number.isFinite(point.ageWeeks) && point.ageWeeks >= 0)
+        .sort((a, b) => a.ageWeeks - b.ageWeeks);
+
+    if (points.length === 0) {
+        context.fillStyle = getComputedStyle(document.body).getPropertyValue("--muted");
+        context.font = "16px Arial";
+        context.textAlign = "center";
+        context.fillText("No dated weight records yet", width / 2, height / 2);
+        return;
+    }
+
+    const weights = points.map(point => point.weight);
+    const ages = points.map(point => point.ageWeeks);
+    let minWeight = Math.floor(Math.min(...weights));
+    let maxWeight = Math.ceil(Math.max(...weights));
+    if (minWeight === maxWeight) {
+        minWeight -= 1;
+        maxWeight += 1;
+    }
+    let minAge = Math.floor(Math.min(...ages));
+    let maxAge = Math.ceil(Math.max(...ages));
+    if (minAge === maxAge) {
+        minAge = Math.max(0, minAge - 1);
+        maxAge += 1;
+    }
+
+    context.strokeStyle = getComputedStyle(document.body).getPropertyValue("--border");
+    context.fillStyle = getComputedStyle(document.body).getPropertyValue("--muted");
+    context.lineWidth = 1;
+    context.font = "12px Arial";
+    context.textAlign = "right";
+
+    for (let i = 0; i <= 4; i++) {
+        const y = padding + (height - padding * 2) * i / 4;
+        const value = maxWeight - (maxWeight - minWeight) * i / 4;
+        context.beginPath();
+        context.moveTo(padding, y);
+        context.lineTo(width - padding, y);
+        context.stroke();
+        context.fillText(value.toFixed(1), padding - 8, y + 4);
+    }
+
+    context.textAlign = "center";
+    for (let i = 0; i <= 4; i++) {
+        const x = padding + (width - padding * 2) * i / 4;
+        const value = minAge + (maxAge - minAge) * i / 4;
+        context.beginPath();
+        context.moveTo(x, padding);
+        context.lineTo(x, height - padding);
+        context.stroke();
+        context.fillText(`${Number(value.toFixed(1))}w`, x, height - padding + 16);
+    }
+
+    context.save();
+    context.textAlign = "center";
+    context.fillText("Age (weeks)", width / 2, height - 4);
+    context.translate(12, height / 2);
+    context.rotate(-Math.PI / 2);
+    context.fillText("Weight (kg)", 0, 0);
+    context.restore();
+
+    context.beginPath();
+    context.strokeStyle = color;
+    context.lineWidth = 3;
+    points.forEach((point, index) => {
+        const x = padding + (width - padding * 2) *
+            (point.ageWeeks - minAge) / (maxAge - minAge);
+        const y = padding + (height - padding * 2) *
+            (maxWeight - point.weight) / (maxWeight - minWeight);
+        if (index === 0) {
+            context.moveTo(x, y);
+        } else {
+            context.lineTo(x, y);
+        }
+    });
+    context.stroke();
+}
+
+function loadData() {
+    migrateReminderDates();
+    setJournalDateDefaults();
+    renderWeights();
+    updateCurrentWeights();
+    updateAges();
+    updateReminders();
+
+    [
+        "lolaNextVaccine",
+        "lolaNextDeworm",
+        "laylaNextVaccine",
+        "laylaNextDeworm"
+    ].forEach(fieldId => {
+        document.getElementById(fieldId).value =
+            localStorage.getItem(fieldId) || "";
+    });
+
+    const savedTitlePhoto = localStorage.getItem("titlePhoto");
+    if (savedTitlePhoto) {
+        document.getElementById("titlePhoto").src = savedTitlePhoto;
+    }
+
+    ["lolaPhoto", "laylaPhoto"].forEach(imageId => {
+        const savedPhoto = localStorage.getItem(imageId);
+        if (savedPhoto) {
+            setPetPhoto(imageId, savedPhoto);
+        }
+    });
+
+    if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark");
+    }
+    updateThemeButton();
+    drawChart();
+}
+
+loadData();
+loadJournal();
+
+updateAges();
+
+renderWeights();
+
+updateCurrentWeights();
+
+updateReminders();
+
+drawChart();
+
+</script>
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
